@@ -42,8 +42,9 @@ public class RewardNetworkImpl implements RewardNetwork {
         final Account account = accountRepository.findByCreditCard(dining.getCreditCardNumber());
         final Restaurant merchantNumber = restaurantRepository.findByMerchantNumber(dining.getMerchantNumber());
 
-        // TODO-01: Reward an account per the sequence diagram
-		// TODO-02: Return the corresponding reward confirmation
-		return null;
+        MonetaryAmount amount = merchantNumber.calculateBenefitFor(account, dining);
+    	AccountContribution contribution = account.makeContribution(amount);
+		accountRepository.updateBeneficiaries(account);
+		return rewardRepository.confirmReward(contribution, dining);
 	}
 }
